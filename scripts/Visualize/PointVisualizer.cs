@@ -4,7 +4,7 @@ using OpenTK.Windowing.Common;
 
 
 namespace Rendering {
-    public class NearestPointRender : Visualize
+    public class PointVisualizer : Visualize
     {
 
         private int _pointShaderProgram;
@@ -20,7 +20,7 @@ namespace Rendering {
         Vector4 color2 = new(0.639f, 0.361f, 0.839f, 1.0f);
 
 
-        public NearestPointRender(int width, int height, string title, string shaderName) : base(width, height, title) {
+        public PointVisualizer(int width, int height, string title, string shaderName) : base(width, height, title) {
             _shaderName = shaderName;
         }
 
