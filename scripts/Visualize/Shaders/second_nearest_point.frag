@@ -20,10 +20,8 @@ vec4 blend(float blendFactor) {
 void main() {
     int nearestIndex = 0;
     int secondNearestIndex = 0;
-    int thirdNearestIndex = 0;
     float nearestDistance = 1.1;
     float secondNearestDistance = 1.1;
-    float thirdNearestDistance = 1.1;
 
     for (int i = 0; i < pointCount; i++) {
         float currentDistance = length(ourPosition - pointCenters[i]);
@@ -31,24 +29,17 @@ void main() {
         if (currentDistance < nearestDistance) {
             secondNearestDistance = nearestDistance;
             nearestDistance = currentDistance;
-            thirdNearestDistance = secondNearestDistance;
             secondNearestIndex = nearestIndex;
             nearestIndex = i;
         }
         else if (currentDistance < secondNearestDistance) {
-            thirdNearestDistance = secondNearestDistance;
             secondNearestDistance = currentDistance;
-            thirdNearestIndex = secondNearestIndex;
             secondNearestIndex = i;
-        }
-        else if (currentDistance < secondNearestDistance) {
-            thirdNearestDistance = currentDistance;
-            thirdNearestIndex = i;
         }
     }
 
-    // float blendFactor = pointCenters[thirdNearestIndex][1];
-    float blendFactor = pow(abs(thirdNearestDistance),1.5) * 10;
+    float blendFactor = pointCenters[secondNearestIndex][1];
+    // float blendFactor = pow(abs(secondNearestDistance),1.5) * 10;
     // blendFactor = sqrt(blendFactor);
 
     FragColor = blend(blendFactor);

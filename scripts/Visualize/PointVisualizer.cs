@@ -9,23 +9,25 @@ namespace Rendering {
 
         private int _pointShaderProgram;
         private int _pointVertexArrayObject;
-        private PointSet _points = new();
+        private PointSet _points;
         string _shaderName;
 
-        // Vector4 color1 = new(0.286f, 0.471f, 0.941f, 1.0f);
-        // Vector4 color2 = new(0.471f, 0.796f, 1.0f, 1.0f);
-        // Vector4 color1 = new(0.1f, 0.1f, 0.1f, 1.0f);
-        // Vector4 color2 = new(1.0f, 0.494f, 0.51f, 1.0f);
-        Vector4 color1 = new(0.961f, 0.588f, 0.831f,1.0f);
-        Vector4 color2 = new(0.639f, 0.361f, 0.839f, 1.0f);
+        public Vector4 _color1;
+        public Vector4 _color2;
+
+        public int _pointCount = 100;
+        public float _maxParticleSpeed = 0.0001f; 
 
 
         public PointVisualizer(int width, int height, string title, string shaderName) : base(width, height, title) {
             _shaderName = shaderName;
+            _points = new();
         }
 
         protected override void OnLoad() {
             base.OnLoad();
+
+            _points = new(_pointCount,_maxParticleSpeed);
 
             // Load and compile shaders
             _pointShaderProgram = CreateShaderProgram("scripts/Visualize/Shaders/point.vert", $"scripts/Visualize/Shaders/{_shaderName}.frag");
@@ -46,10 +48,10 @@ namespace Rendering {
             GL.Uniform1(countLocation,_points._pointCount);
 
             int color1Location = GL.GetUniformLocation(_pointShaderProgram,"color1");
-            GL.Uniform4(color1Location,color1);
+            GL.Uniform4(color1Location,_color1);
 
             int color2Location = GL.GetUniformLocation(_pointShaderProgram,"color2");
-            GL.Uniform4(color2Location,color2);
+            GL.Uniform4(color2Location,_color2);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -84,15 +86,18 @@ namespace Rendering {
         public Vector2[] _pointPositions;
         public Vector2[] _pointForces;
         public int _pointCount = 100;
-        public float maxForceMagnitude = 0.0001f;
+        public float _maxForceMagnitude = 0.0001f;
 
-        public PointSet () {
+        public PointSet (int pointCount = 100, float maxForceMagnitude = 0.0001f) {
+            _pointCount = pointCount;
+            _maxForceMagnitude = maxForceMagnitude;
+
             _pointPositions = new Vector2[_pointCount];
             _pointForces = new Vector2[_pointCount];
 
             Parallel.For(0, _pointCount, (i) => {
                 _pointPositions[i] = RandomCoordinate();
-                _pointForces[i] = RandomCoordinate() * maxForceMagnitude;
+                _pointForces[i] = RandomCoordinate() * _maxForceMagnitude;
             });
         }
 
